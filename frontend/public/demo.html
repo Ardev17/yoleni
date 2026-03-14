@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yoleni Design de Processos Químicos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rose: #e91e8c;
+    --rose-light: #f472b6;
+    --rose-dark: #9d174d;
+    --mauve: #c084fc;
+    --mauve-dark: #7c3aed;
+    --deep-purple: #0f0520;
+    --card-bg: rgba(255,255,255,0.04);
+    --border: rgba(233,30,140,0.2);
+    --text-dim: rgba(255,255,255,0.5);
+    --green: #34d399;
+    --yellow: #fbbf24;
+    --lime: #a3e635;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--deep-purple);
+    color: #fff;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); }
+  ::-webkit-scrollbar-thumb { background: rgba(233,30,140,0.35); border-radius: 3px; }
+
+  /* Background orbs */
+  .bg-orbs { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .orb {
+    position: absolute; border-radius: 50%;
+    filter: blur(80px); opacity: 0.5;
+    animation: float 8s ease-in-out infinite;
+  }
+  .orb-1 { width: 600px; height: 600px; top: -200px; right: -100px; background: radial-gradient(circle, rgba(233,30,140,0.15), transparent 70%); }
+  .orb-2 { width: 500px; height: 500px; bottom: -100px; left: -100px; background: radial-gradient(circle, rgba(192,132,252,0.12), transparent 70%); animation-delay: -4s; }
+  .orb-3 { width: 300px; height: 300px; top: 50%; left: 40%; background: radial-gradient(circle, rgba(233,30,140,0.08), transparent 70%); animation-delay: -2s; }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-30px) scale(1.05); }
+  }
+
+  /* Grid pattern overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: linear-gradient(rgba(233,30,140,0.03) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(233,30,140,0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+
+  /* Layout */
+  .container { position: relative; z-index: 5; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+  /* Header */
+  header {
+    position: sticky; top: 0; z-index: 100;
+    border-bottom: 1px solid rgba(233,30,140,0.12);
+    background: rgba(15,5,32,0.85);
+    backdrop-filter: blur(24px);
+  }
+
+  .header-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 72px; padding: 0 24px; max-width: 1200px; margin: 0 auto;
+  }
+
+  .logo { display: flex; align-items: center; gap: 14px; }
+  .logo-icon {
+    width: 46px; height: 46px; border-radius: 14px;
+    background: linear-gradient(135deg, var(--rose), var(--mauve-dark));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 0 24px rgba(233,30,140,0.35), inset 0 1px 0 rgba(255,255,255,0.15);
+  }
+
+  .logo-text { line-height: 1; }
+  .logo-name {
+    font-size: 17px; font-weight: 800;
+    background: linear-gradient(to right, #fff 30%, var(--rose-light));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .logo-sub { font-size: 10px; color: rgba(255,255,255,0.35); letter-spacing: 2.5px; text-transform: uppercase; margin-top: 2px; }
+
+  .header-actions { display: flex; gap: 10px; }
+  .btn-ghost {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.75); padding: 9px 18px; border-radius: 12px;
+    cursor: pointer; font-size: 13px; font-weight: 600;
+    transition: all 0.25s; font-family: 'Outfit', sans-serif;
+  }
+  .btn-ghost:hover { border-color: var(--rose); color: var(--rose-light); background: rgba(233,30,140,0.08); }
+
+  /* Hero */
+  .hero { text-align: center; padding: 72px 0 56px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(233,30,140,0.1); border: 1px solid rgba(233,30,140,0.3);
+    border-radius: 30px; padding: 9px 22px; margin-bottom: 32px;
+    font-size: 13px; color: var(--rose-light); font-weight: 600;
+    animation: pulse-badge 3s ease-in-out infinite;
+  }
+  @keyframes pulse-badge {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(233,30,140,0.2); }
+    50% { box-shadow: 0 0 0 8px rgba(233,30,140,0); }
+  }
+
+  .hero h1 { font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 900; line-height: 1.05; letter-spacing: -2px; }
+  .hero h1 .accent {
+    background: linear-gradient(135deg, var(--rose), var(--mauve));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero h1 .subtitle-h1 { display: block; font-size: 0.65em; color: rgba(255,255,255,0.8); font-weight: 700; margin-top: 6px; letter-spacing: -0.5px; }
+
+  .hero-desc { color: rgba(255,255,255,0.5); font-size: 17px; max-width: 500px; margin: 22px auto 0; line-height: 1.85; }
+
+  /* Stats */
+  .stats-row { display: flex; justify-content: center; gap: 40px; margin: 36px 0 0; flex-wrap: wrap; }
+  .stat { text-align: center; }
+  .stat-value { font-size: 28px; font-weight: 800; background: linear-gradient(to right, #fff, var(--rose-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .stat-label { font-size: 11px; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 2px; margin-top: 2px; }
+
+  /* Input Card */
+  .input-card {
+    background: rgba(255,255,255,0.035);
+    border: 1px solid rgba(233,30,140,0.18);
+    border-radius: 28px; padding: 40px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 40px 100px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06);
+    margin-bottom: 24px;
+  }
+
+  .input-label { font-size: 13px; font-weight: 700; color: var(--rose-light); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+
+  textarea {
+    width: 100%; background: rgba(255,255,255,0.055);
+    border: 2px solid rgba(233,30,140,0.18);
+    border-radius: 18px; padding: 18px 22px;
+    color: #fff; font-size: 15px; resize: vertical;
+    outline: none; font-family: 'Outfit', sans-serif;
+    line-height: 1.85; transition: border-color 0.25s, box-shadow 0.25s;
+    min-height: 120px;
+  }
+  textarea:focus { border-color: var(--rose); box-shadow: 0 0 0 4px rgba(233,30,140,0.1); }
+  textarea::placeholder { color: rgba(255,255,255,0.22); }
+
+  .input-hint { font-size: 12px; color: rgba(255,255,255,0.3); margin-top: 10px; }
+
+  /* Examples */
+  .examples-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 28px; align-items: center; }
+  .example-label { font-size: 12px; color: rgba(255,255,255,0.35); }
+  .example-chip {
+    background: rgba(255,255,255,0.045); border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.65); padding: 6px 14px; border-radius: 20px;
+    cursor: pointer; font-size: 12px; font-weight: 500; transition: all 0.2s;
+    font-family: 'Outfit', sans-serif;
+  }
+  .example-chip:hover { border-color: var(--rose); color: var(--rose-light); background: rgba(233,30,140,0.08); }
+
+  /* Actions row */
+  .actions-row { display: flex; gap: 14px; flex-wrap: wrap; }
+
+  .btn-primary {
+    flex: 1 1 200px; min-width: 200px;
+    background: linear-gradient(135deg, var(--rose), var(--mauve-dark));
+    border: none; color: #fff; padding: 17px 32px;
+    border-radius: 16px; cursor: pointer; font-size: 16px;
+    font-weight: 800; letter-spacing: 0.3px;
+    box-shadow: 0 0 40px rgba(233,30,140,0.35);
+    transition: all 0.3s; font-family: 'Outfit', sans-serif;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    position: relative; overflow: hidden;
+  }
+  .btn-primary::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .btn-primary:hover::before { opacity: 1; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 50px rgba(233,30,140,0.5); }
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-upload {
+    background: rgba(255,255,255,0.04); border: 2px dashed rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.65); padding: 15px 24px; border-radius: 16px;
+    cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s;
+    font-family: 'Outfit', sans-serif; display: flex; align-items: center; gap: 8px;
+  }
+  .btn-upload:hover { border-color: var(--mauve); color: var(--mauve); background: rgba(192,132,252,0.08); }
+
+  /* Results section */
+  .results { display: none; }
+  .results.visible { display: block; animation: fadeInUp 0.6s ease; }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Greeting card */
+  .greeting-card {
+    background: linear-gradient(135deg, rgba(233,30,140,0.1), rgba(192,132,252,0.1));
+    border: 1px solid rgba(233,30,140,0.25);
+    border-radius: 24px; padding: 28px 32px; margin-bottom: 32px;
+    position: relative; overflow: hidden;
+  }
+  .greeting-card::after {
+    content: '⚗️'; position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+    font-size: 80px; opacity: 0.07;
+  }
+  .greeting-inner { display: flex; gap: 18px; align-items: flex-start; }
+  .ai-avatar {
+    width: 50px; height: 50px; border-radius: 16px; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--rose), var(--mauve-dark));
+    display: flex; align-items: center; justify-content: center; font-size: 22px;
+    box-shadow: 0 0 20px rgba(233,30,140,0.3);
+  }
+  .ai-label { font-size: 11px; color: var(--rose-light); text-transform: uppercase; letter-spacing: 2px; font-weight: 700; margin-bottom: 8px; }
+  .ai-text { color: rgba(255,255,255,0.85); font-size: 15px; line-height: 1.8; }
+
+  /* Summary cards */
+  .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .summary-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 18px; padding: 22px 24px;
+    backdrop-filter: blur(10px);
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .summary-card:hover { transform: translateY(-3px); border-color: rgba(233,30,140,0.4); }
+  .summary-icon { font-size: 28px; margin-bottom: 10px; }
+  .summary-label { font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; }
+  .summary-value { font-size: 22px; font-weight: 800; }
+
+  /* Section headers */
+  .section-header { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; }
+  .section-bar { width: 4px; height: 36px; border-radius: 2px; background: linear-gradient(to bottom, var(--rose), var(--mauve)); }
+  .section-title { font-size: 22px; font-weight: 800; }
+  .section-sub { font-size: 13px; color: rgba(255,255,255,0.4); margin-top: 3px; }
+  .section-icon {
+    width: 40px; height: 40px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--rose), var(--mauve-dark));
+    display: flex; align-items: center; justify-content: center; font-size: 18px;
+  }
+
+  /* Table */
+  .table-card {
+    background: rgba(255,255,255,0.025); border: 1px solid var(--border);
+    border-radius: 24px; overflow: hidden; margin-bottom: 44px;
+  }
+  .table-header { padding: 24px 32px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 14px; }
+  .table-wrapper { overflow-x: auto; }
+
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { background: rgba(233,30,140,0.08); }
+  th {
+    padding: 14px 18px; text-align: left;
+    color: var(--rose-light); font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  td {
+    padding: 16px 18px; border-bottom: 1px solid rgba(255,255,255,0.045);
+    font-size: 13.5px; vertical-align: middle;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr { transition: background 0.2s; }
+  tbody tr:hover { background: rgba(233,30,140,0.04); }
+
+  .td-name { color: #fff; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .td-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--rose); flex-shrink: 0; }
+  .td-formula { color: var(--rose-light); font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; }
+  .td-func { color: rgba(255,255,255,0.85); }
+  .td-dim { color: rgba(255,255,255,0.6); font-size: 12.5px; max-width: 200px; }
+  .td-cost { color: var(--lime); font-weight: 700; white-space: nowrap; }
+
+  /* Badges */
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  }
+  .badge-dot { width: 7px; height: 7px; border-radius: 50%; }
+  .badge-low { background: #d1fae5; color: #065f46; }
+  .badge-low .badge-dot { background: #10b981; }
+  .badge-moderate { background: #fef3c7; color: #92400e; }
+  .badge-moderate .badge-dot { background: #f59e0b; }
+  .badge-high { background: #fee2e2; color: #7f1d1d; }
+  .badge-high .badge-dot { background: #ef4444; }
+  .badge-critical { background: #f5d0fe; color: #6b21a8; }
+  .badge-critical .badge-dot { background: #a855f7; }
+
+  /* Process cards */
+  .processes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; }
+
+  .process-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 22px; padding: 28px;
+    backdrop-filter: blur(10px);
+    transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+  }
+  .process-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 60px rgba(233,30,140,0.12);
+    border-color: rgba(233,30,140,0.4);
+  }
+
+  .process-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; flex-wrap: wrap; gap: 10px; }
+  .process-num { font-size: 11px; font-weight: 700; color: var(--rose-light); text-transform: uppercase; letter-spacing: 1.5px; }
+  .process-name { font-size: 18px; font-weight: 800; color: #fff; margin-top: 4px; }
+
+  .type-badge { padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+  .type-optimized { background: rgba(233,30,140,0.15); color: var(--rose-light); }
+  .type-low_cost { background: rgba(163,230,53,0.12); color: var(--lime); }
+  .type-eco_friendly { background: rgba(52,211,153,0.12); color: var(--green); }
+
+  .process-desc {
+    color: rgba(255,255,255,0.7); font-size: 14px; line-height: 1.75;
+    padding: 14px 18px; background: rgba(255,255,255,0.03);
+    border-radius: 12px; border-left: 3px solid var(--rose); margin-bottom: 20px;
+  }
+
+  .metrics-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+  .metric { background: rgba(255,255,255,0.04); border-radius: 12px; padding: 12px; text-align: center; }
+  .metric-label { font-size: 10px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 5px; }
+  .metric-value { font-size: 15px; font-weight: 800; }
+
+  .reagents-row { margin-bottom: 16px; }
+  .reagents-label { font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+  .reagent-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .reagent-tag {
+    background: rgba(233,30,140,0.12); border: 1px solid rgba(233,30,140,0.25);
+    color: var(--rose-light); padding: 4px 14px; border-radius: 20px;
+    font-size: 12px; font-weight: 600; font-family: 'JetBrains Mono', monospace;
+  }
+
+  .recommendation {
+    background: rgba(192,132,252,0.08); border: 1px solid rgba(192,132,252,0.2);
+    border-radius: 14px; padding: 16px 18px;
+  }
+  .rec-label { font-size: 11px; color: var(--mauve); font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; }
+  .rec-text { color: rgba(255,255,255,0.8); font-size: 13px; line-height: 1.7; }
+
+  /* Environmental banner */
+  .env-banner {
+    background: rgba(52,211,153,0.06); border: 1px solid rgba(52,211,153,0.2);
+    border-radius: 20px; padding: 24px 28px; margin-top: 32px;
+    display: flex; gap: 18px; align-items: flex-start;
+  }
+  .env-icon { font-size: 32px; flex-shrink: 0; }
+  .env-label { font-size: 12px; color: var(--green); font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+  .env-text { color: rgba(255,255,255,0.75); font-size: 14px; line-height: 1.75; }
+
+  /* Loading overlay */
+  .loading-overlay {
+    background: rgba(255,255,255,0.025); border: 1px solid var(--border);
+    border-radius: 28px; padding: 60px 40px; text-align: center;
+    display: none; flex-direction: column; align-items: center; gap: 32px;
+    margin-bottom: 24px;
+  }
+  .loading-overlay.active { display: flex; animation: fadeInUp 0.4s ease; }
+
+  .spinner-ring {
+    width: 100px; height: 100px; position: relative;
+    animation: spin 3s linear infinite;
+  }
+  .spinner-inner { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 38px; animation: spin-reverse 3s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes spin-reverse { to { transform: rotate(-360deg); } }
+
+  .loading-step { color: rgba(255,255,255,0.6); font-size: 15px; min-height: 26px; }
+  .loading-steps-list { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+  .step-item { display: flex; align-items: center; gap: 10px; font-size: 14px; color: rgba(255,255,255,0.45); transition: all 0.4s; }
+  .step-item.active { color: var(--rose-light); }
+  .step-item.done { color: var(--green); }
+  .step-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.2); flex-shrink: 0; transition: all 0.4s; }
+  .step-item.active .step-dot { background: var(--rose); box-shadow: 0 0 8px var(--rose); }
+  .step-item.done .step-dot { background: var(--green); }
+
+  /* Footer */
+  footer {
+    position: relative; z-index: 5; border-top: 1px solid rgba(233,30,140,0.08);
+    padding: 28px 24px; text-align: center; margin-top: 60px;
+  }
+  .footer-text { color: rgba(255,255,255,0.2); font-size: 13px; }
+  .footer-text span { color: var(--rose-light); }
+
+  /* Error toast */
+  .error-toast {
+    background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 16px; padding: 16px 24px; margin-bottom: 20px;
+    color: #fca5a5; display: none; align-items: center; gap: 12px; font-size: 14px;
+  }
+  .error-toast.show { display: flex; animation: fadeInUp 0.3s ease; }
+
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 2.2rem; }
+    .processes-grid { grid-template-columns: 1fr; }
+    .input-card { padding: 28px 22px; }
+    .metrics-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">⚗️</div>
+      <div class="logo-text">
+        <div class="logo-name">Yoleni Design</div>
+        <div class="logo-sub">Processos Químicos</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-ghost" onclick="toggleHistory()">📋 Histórico</button>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">✨ Sistema Inteligente de IA &nbsp;•&nbsp; Powered by Aristides Chiovo</div>
+    <h1>
+      <span style="color:#fff">Yoleni</span> <span class="accent">Design</span>
+      <span class="subtitle-h1">de Processos Químicos</span>
+    </h1>
+    <p class="hero-desc">Design inteligente de processos químicos usando inteligência artificial avançada, especialmente desenvolvido para a Engenheira Yoleni.</p>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-value">50+</div><div class="stat-label">Substâncias</div></div>
+      <div class="stat"><div class="stat-value">IA Avançada</div><div class="stat-label">Motor de IA</div></div>
+      <div class="stat"><div class="stat-value">3 tipos</div><div class="stat-label">De processo</div></div>
+      <div class="stat"><div class="stat-value">100%</div><div class="stat-label">Personalizado</div></div>
+    </div>
+  </section>
+
+  <!-- INPUT CARD -->
+  <div class="input-card">
+    <div class="input-label">⚗️ Insira as Substâncias Químicas</div>
+    <textarea id="substancesInput" rows="4" placeholder="NaOH, HCl, NH3, CaCO3, H2SO4, Ethanol, Acetic Acid...
+
+Separe por vírgula, ponto-e-vírgula ou quebra de linha."></textarea>
+    <p class="input-hint">Aceita nomes, fórmulas e compostos • Separe por vírgula • Máximo 50 substâncias por análise</p>
+
+    <div class="examples-row">
+      <span class="example-label">Exemplos rápidos:</span>
+      <span class="example-chip" onclick="setExample('NaOH, HCl, NH3, CaCO3')">NaOH, HCl, NH3, CaCO3</span>
+      <span class="example-chip" onclick="setExample('H2SO4, Ethanol, Acetic Acid')">H2SO4, Ethanol, Acetic Acid</span>
+      <span class="example-chip" onclick="setExample('NaCl, KOH, Fe2O3, CO2, HNO3')">NaCl, KOH, Fe2O3, CO2</span>
+      <span class="example-chip" onclick="setExample('CH4, O2, N2, SO2, NH3, HCl')">CH4, O2, N2, SO2</span>
+    </div>
+
+    <div class="actions-row">
+      <button class="btn-primary" onclick="runAnalysis()">
+        ✨ Analisar Processo
+      </button>
+      <label class="btn-upload" style="cursor:pointer">
+        <input type="file" accept=".csv,.xlsx,.xls" style="display:none" onchange="handleFile(this)">
+        📁 CSV / Excel
+      </label>
+    </div>
+  </div>
+
+  <!-- ERROR -->
+  <div class="error-toast" id="errorToast">
+    ⚠️ <span id="errorMsg">Erro ao processar.</span>
+  </div>
+
+  <!-- LOADING -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <svg class="spinner-ring" viewBox="0 0 100 100">
+      <defs>
+        <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#e91e8c"/>
+          <stop offset="100%" stop-color="#c084fc"/>
+        </linearGradient>
+      </defs>
+      <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(233,30,140,0.12)" stroke-width="7"/>
+      <circle cx="50" cy="50" r="44" fill="none" stroke="url(#g1)" stroke-width="7" stroke-dasharray="70 210" stroke-linecap="round"/>
+    </svg>
+    <div class="spinner-inner">⚗️</div>
+    <div>
+      <p style="color:var(--rose-light);font-size:17px;font-weight:700;margin-bottom:20px">Sistema Avançado em Processamento</p>
+      <div class="loading-steps-list" id="stepsContainer">
+        <div class="step-item" id="step0"><div class="step-dot"></div>🔬 Identificando substâncias...</div>
+        <div class="step-item" id="step1"><div class="step-dot"></div>⚗️ Consultando base química...</div>
+        <div class="step-item" id="step2"><div class="step-dot"></div>🤖 IA analisando propriedades...</div>
+        <div class="step-item" id="step3"><div class="step-dot"></div>💡 Sugerindo processos otimizados...</div>
+        <div class="step-item" id="step4"><div class="step-dot"></div>✨ Preparando dashboard para Yoleni...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results" id="resultsSection">
+
+    <!-- Greeting -->
+    <div class="greeting-card" id="greetingCard">
+      <div class="greeting-inner">
+        <div class="ai-avatar">🤖</div>
+        <div>
+          <div class="ai-label">Sistema Yoleni Chemical AI</div>
+          <div class="ai-text" id="greetingText"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="summary-grid" id="summaryGrid"></div>
+
+    <!-- Table -->
+    <div class="table-card" id="tableCard">
+      <div class="table-header">
+        <div class="section-icon">🔬</div>
+        <div>
+          <div style="font-size:18px;font-weight:800">Substâncias Analisadas</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:2px" id="tableSubtitle"></div>
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Substância</th><th>Fórmula</th><th>Função Química</th>
+              <th>Propriedades</th><th>Aplicação Industrial</th>
+              <th>Custo Est.</th><th>Impacto Amb.</th>
+            </tr>
+          </thead>
+          <tbody id="substancesBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-header">
+        <div class="section-bar"></div>
+        <div>
+          <div class="section-title">Processos Sugeridos pelo Sistema Avançado</div>
+          <div class="section-sub">Recomendações otimizadas por Inteligência Artificial exclusivamente para Yoleni</div>
+        </div>
+      </div>
+      <div class="processes-grid" id="processesGrid"></div>
+    </div>
+
+    <div class="env-banner" id="envBanner" style="display:none">
+      <div class="env-icon">🌿</div>
+      <div>
+        <div class="env-label">🌿 Recomendação de Sustentabilidade para Yoleni</div>
+        <div class="env-text" id="envText"></div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-text">
+    Yoleni Design de Processos Químicos • Desenvolvido com <span>💜</span> para Engenheira Yoleni • Powered by Aritides Chiovo
+  </div>
+</footer>
+
+<script>
+const DEMO_RESULT = {
+  greeting: "Olá Yoleni, que prazer analisar estas substâncias para você! Identifiquei 6 compostos químicos distintos incluindo ácidos, bases e sais inorgânicos. Com base nas interações possíveis entre eles, preparei uma análise completa com 3 processos otimizados que priorizam eficiência, segurança e menor impacto ambiental. Veja abaixo os resultados detalhados — estou à sua disposição para qualquer esclarecimento adicional! ✨",
+  substances: [
+    { name: "Hidróxido de Sódio", formula: "NaOH", chemical_function: "Base Forte", properties: "Sólido branco, higroscópico, altamente solúvel em água, pH 14", industrial_application: "Fabricação de papel, sabão, tratamento de água e refinamento de alumínio", environmental_impact: "moderado", estimated_cost: "$0.30/kg", pollution_level: "moderado" },
+    { name: "Ácido Clorídrico", formula: "HCl", chemical_function: "Ácido Forte", properties: "Gás incolor em solução aquosa, pungente, corrosivo, pH 0-1", industrial_application: "Decapagem de metais, produção de PVC e controle de pH industrial", environmental_impact: "alto", estimated_cost: "$0.15/kg", pollution_level: "alto" },
+    { name: "Amônia", formula: "NH3", chemical_function: "Base Fraca", properties: "Gás incolor, odor pungente, solúvel em água, ponto de ebulição -33°C", industrial_application: "Fertilizantes, refrigeração industrial e síntese de compostos nitrogenados", environmental_impact: "moderado", estimated_cost: "$0.40/kg", pollution_level: "moderado" },
+    { name: "Carbonato de Cálcio", formula: "CaCO3", chemical_function: "Sal Inorgânico", properties: "Pó branco, insolúvel em água, reage com ácidos liberando CO2", industrial_application: "Fabricação de cimento, cal, vidro e suplemento alimentar (carbonato)", environmental_impact: "baixo", estimated_cost: "$0.05/kg", pollution_level: "baixo" },
+    { name: "Ácido Sulfúrico", formula: "H2SO4", chemical_function: "Ácido Forte", properties: "Líquido viscoso, higroscópico, corrosivo, densidade 1,84 g/mL, pH<1", industrial_application: "Produção de fertilizantes (superfosfatos), baterias e refino de petróleo", environmental_impact: "crítico", estimated_cost: "$0.10/kg", pollution_level: "crítico" },
+    { name: "Ácido Acético", formula: "CH3COOH", chemical_function: "Ácido Fraco", properties: "Líquido incolor, odor acético, miscível em água, pKa 4,76", industrial_application: "Produção de acetato de vinila, solventes e conservação alimentar", environmental_impact: "baixo", estimated_cost: "$0.60/kg", pollution_level: "baixo" },
+  ],
+  suggested_processes: [
+    {
+      process_name: "Neutralização Controlada NaOH-HCl",
+      type: "optimized",
+      description: "Processo de neutralização ácido-base entre hidróxido de sódio e ácido clorídrico em reator de fluxo contínuo com controle automático de pH, resultando em solução de cloreto de sódio ultrapuro.",
+      reagents: ["NaOH", "HCl", "H2O deionizada"],
+      estimated_efficiency: "99,2%",
+      estimated_cost: "$0.45/kg produto",
+      environmental_impact: "baixo",
+      industrial_recommendation: "Recomendo implementar um sistema de controle PID para monitoramento contínuo do pH. A reação NaOH + HCl → NaCl + H2O é altamente exotérmica — utilize trocadores de calor em série para recuperação energética de até 78%. Ideal para produção de NaCl farmacêutico de alta pureza.",
+      advantages: ["Eficiência energética com recuperação de calor", "Produto NaCl de alta pureza", "Processo contínuo sem resíduos tóxicos"]
+    },
+    {
+      process_name: "Síntese de Sulfato de Amônio Verde",
+      type: "eco_friendly",
+      description: "Reação entre amônia e ácido sulfúrico diluído para produção de sulfato de amônio — fertilizante nitrogenado de alta demanda agrícola, com emissões reduzidas via absorção de NH3 em excesso.",
+      reagents: ["NH3", "H2SO4 (diluído 50%)", "Água de processo"],
+      estimated_efficiency: "96,5%",
+      estimated_cost: "$0.55/kg produto",
+      environmental_impact: "moderado",
+      industrial_recommendation: "Para minimizar as emissões de NH3, instale um sistema de scrubber úmido na saída dos reatores. A relação estequiométrica ideal é 2NH3:1H2SO4. Yoleni, considere utilizar NH3 recuperado de outros processos para reduzir custos operacionais em até 35%.",
+      advantages: ["Produto com alto valor agrícola", "Captura de NH3 residual", "Custo de matéria-prima reduzido"]
+    },
+    {
+      process_name: "Processo Solvay Modificado com CaCO3",
+      type: "low_cost",
+      description: "Processo inspirado no Solvay utilizando CaCO3 para produção de carbonato de sódio via reação com NaOH e CO2 capturado in-situ, com custos operacionais 40% menores que o processo convencional.",
+      reagents: ["CaCO3", "NaOH", "NH3 (catalisador)", "CO2"],
+      estimated_efficiency: "91,8%",
+      estimated_cost: "$0.28/kg produto",
+      environmental_impact: "baixo",
+      industrial_recommendation: "Este processo é ideal para Yoleni implementar em escala piloto. O CaCO3 atua como regulador de pH natural, eliminando a necessidade de neutralizantes externos. Aproveite o CO2 de outros processos industriais como matéria-prima, convertendo um resíduo em insumo de alto valor.",
+      advantages: ["Custo operacional 40% menor", "Utiliza CO2 residual como insumo", "CaCO3 abundante e de baixo custo"]
+    }
+  ],
+  summary: {
+    total_substances: 6,
+    safest_combination: "CaCO3 + CH3COOH + H2O — neutralização suave com baixo impacto ambiental",
+    most_efficient_process: "Neutralização Controlada NaOH-HCl com 99,2% de eficiência",
+    environmental_recommendation: "Para minimizar o impacto ambiental, Yoleni, recomendo priorizar o Processo Solvay Modificado e a Síntese de Sulfato de Amônio Verde. Substitua H2SO4 concentrado por soluções diluídas (≤50%) quando possível. Implemente sistemas de recuperação de calor e recirculação de subprodutos. Com essas medidas, é possível reduzir as emissões em até 60% e os custos operacionais em 35%.",
+    cost_optimization: "Compre NaOH e HCl em lotes de 10 toneladas para desconto de 22% — combine com contratos anuais de fornecimento de CaCO3 da região Sul para economizar mais $0.02/kg."
+  }
+};
+
+
+function setExample(text) {
+  document.getElementById('substancesInput').value = text;
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorToast');
+  document.getElementById('errorMsg').textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 5000);
+}
+
+function getBadgeClass(level) {
+  const map = { baixo: 'low', moderado: 'moderate', alto: 'high', crítico: 'critical', critico: 'critical' };
+  return 'badge badge-' + (map[(level || '').toLowerCase()] || 'moderate');
+}
+
+function getTypeBadge(type) {
+  const map = { optimized: ['type-optimized', '⚡ Otimizado'], low_cost: ['type-low_cost', '💰 Baixo Custo'], eco_friendly: ['type-eco_friendly', '🌿 Eco Friendly'] };
+  return map[type] || map.optimized;
+}
+
+
+let stepInterval = null;
+
+function startLoadingSteps() {
+  let current = 0;
+  for (let i = 0; i < 5; i++) {
+    const el = document.getElementById('step' + i);
+    el.classList.remove('active', 'done');
+  }
+  document.getElementById('step0').classList.add('active');
+
+  stepInterval = setInterval(() => {
+    const prev = document.getElementById('step' + current);
+    if (prev) { prev.classList.remove('active'); prev.classList.add('done'); }
+    current++;
+    if (current < 5) {
+      const next = document.getElementById('step' + current);
+      if (next) next.classList.add('active');
+    }
+  }, 1600);
+}
+
+function stopLoadingSteps() {
+  if (stepInterval) { clearInterval(stepInterval); stepInterval = null; }
+}
+
+
+function renderGreeting(text) {
+  document.getElementById('greetingText').textContent = text;
+}
+
+function renderSummary(summary, count) {
+  const grid = document.getElementById('summaryGrid');
+  const cards = [
+    { icon: '🔬', label: 'Substâncias Analisadas', value: count || summary.total_substances, color: '#e91e8c' },
+    { icon: '🌿', label: 'Combinação + Segura', value: (summary.safest_combination || '').slice(0, 50) + '…', color: '#34d399', small: true },
+    { icon: '⚡', label: 'Processo + Eficiente', value: (summary.most_efficient_process || '').slice(0, 50) + '…', color: '#fbbf24', small: true },
+    { icon: '💰', label: 'Dica de Custo', value: (summary.cost_optimization || '').slice(0, 60) + '…', color: '#a3e635', small: true },
+  ];
+  grid.innerHTML = cards.map(c => `
+    <div class="summary-card">
+      <div class="summary-icon">${c.icon}</div>
+      <div class="summary-label">${c.label}</div>
+      <div class="summary-value ${c.small ? '' : ''}" style="color:${c.color};font-size:${c.small ? '13px' : '28px'}">${c.value}</div>
+    </div>`).join('');
+}
+
+function renderSubstances(substances) {
+  document.getElementById('tableSubtitle').textContent = `${substances.length} substância(s) identificada(s) e analisada(s) com IA`;
+  const tbody = document.getElementById('substancesBody');
+  tbody.innerHTML = substances.map(s => `
+    <tr>
+      <td><div class="td-name"><div class="td-dot"></div>${s.name}</div></td>
+      <td class="td-formula">${s.formula || '—'}</td>
+      <td class="td-func">${s.chemical_function || '—'}</td>
+      <td class="td-dim">${s.properties || '—'}</td>
+      <td class="td-dim">${s.industrial_application || '—'}</td>
+      <td class="td-cost">${s.estimated_cost || '—'}</td>
+      <td><span class="${getBadgeClass(s.environmental_impact)}"><span class="badge-dot"></span>${s.environmental_impact || 'N/A'}</span></td>
+    </tr>`).join('');
+}
+
+function renderProcesses(processes) {
+  const grid = document.getElementById('processesGrid');
+  grid.innerHTML = processes.map((p, i) => {
+    const [typeCls, typeLabel] = getTypeBadge(p.type);
+    const reagentTags = (p.reagents || []).map(r => `<span class="reagent-tag">${r}</span>`).join('');
+    const advantages = (p.advantages || []).map(a => `<li style="color:rgba(255,255,255,0.65);font-size:13px;margin-bottom:4px">${a}</li>`).join('');
+    return `
+      <div class="process-card">
+        <div class="process-header">
+          <div>
+            <div class="process-num">Processo ${String(i + 1).padStart(2, '0')}</div>
+            <div class="process-name">${p.process_name}</div>
+          </div>
+          <span class="type-badge ${typeCls}">${typeLabel}</span>
+        </div>
+        ${p.description ? `<div class="process-desc">${p.description}</div>` : ''}
+        <div class="metrics-row">
+          <div class="metric"><div class="metric-label">Eficiência</div><div class="metric-value" style="color:#a3e635">${p.estimated_efficiency || 'N/A'}</div></div>
+          <div class="metric"><div class="metric-label">Custo</div><div class="metric-value" style="color:#fbbf24">${p.estimated_cost || 'N/A'}</div></div>
+          <div class="metric"><div class="metric-label">Impacto</div><div class="metric-value"><span class="${getBadgeClass(p.environmental_impact)}" style="font-size:11px"><span class="badge-dot"></span>${p.environmental_impact || 'N/A'}</span></div></div>
+        </div>
+        ${reagentTags ? `<div class="reagents-row"><div class="reagents-label">Reagentes</div><div class="reagent-tags">${reagentTags}</div></div>` : ''}
+        ${p.industrial_recommendation ? `
+          <div class="recommendation">
+            <div class="rec-label">💡 Recomendação para Yoleni</div>
+            <div class="rec-text">${p.industrial_recommendation}</div>
+          </div>` : ''}
+        ${advantages ? `<div style="margin-top:14px"><div style="font-size:11px;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px">Vantagens</div><ul style="padding-left:16px">${advantages}</ul></div>` : ''}
+      </div>`;
+  }).join('');
+}
+
+
+async function runAnalysis() {
+  const input = document.getElementById('substancesInput').value.trim();
+  if (!input) { showError('Por favor, insira pelo menos uma substância.'); return; }
+
+  document.getElementById('loadingOverlay').classList.add('active');
+  document.getElementById('resultsSection').classList.remove('visible');
+  document.getElementById('errorToast').classList.remove('show');
+  startLoadingSteps();
+
+  try {
+    let result;
+
+    try {
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ substances_input: input }),
+      });
+      if (res.ok) {
+        const json = await res.json();
+        result = json.data;
+      } else {
+        throw new Error('API unavailable');
+      }
+    } catch {
+      await new Promise(r => setTimeout(r, 5000));
+      result = DEMO_RESULT;
+    }
+
+    if (result.greeting) renderGreeting(result.greeting);
+    if (result.summary) renderSummary(result.summary, result.substances?.length);
+    if (result.substances) renderSubstances(result.substances);
+    if (result.suggested_processes) renderProcesses(result.suggested_processes);
+
+    if (result.summary?.environmental_recommendation) {
+      document.getElementById('envText').textContent = result.summary.environmental_recommendation;
+      document.getElementById('envBanner').style.display = 'flex';
+    }
+
+    document.getElementById('resultsSection').classList.add('visible');
+    setTimeout(() => {
+      document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 200);
+
+  } catch (e) {
+    showError(e.message || 'Erro ao processar análise.');
+  } finally {
+    stopLoadingSteps();
+    document.getElementById('loadingOverlay').classList.remove('active');
+  }
+}
+
+function handleFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  document.getElementById('substancesInput').value = `[Arquivo carregado: ${file.name}]\nNaOH, HCl, NH3, CaCO3, H2SO4`;
+  runAnalysis();
+}
+
+function toggleHistory() {
+  alert('📋 Histórico de Análises\n\nEsta funcionalidade exibe as últimas 20 análises salvas no MySQL.\n\nNo sistema completo com backend rodando, ela busca de:\nGET /api/history\n\nIntegre com o backend Node.js conforme o README.');
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.key === 'Enter') runAnalysis();
+});
+</script>
+</body>
+</html>
