@@ -228,7 +228,7 @@ function Home() {
       {/* Hero */}
       <div style={{ textAlign:'center', marginBottom:60 }}>
         <div style={{ display:'inline-flex', alignItems:'center', gap:8, background:'rgba(233,30,140,.1)', border:`1px solid rgba(233,30,140,.3)`, borderRadius:30, padding:'8px 20px', marginBottom:28, fontSize:13, color:C.roseLight, fontWeight:600 }}>
-          ✨ Sistema Inteligente de IA &nbsp;•&nbsp; Powered by GPT-4
+          ✨ Sistema Inteligente de IA &nbsp;•&nbsp; Powered by Aristides Chiovo
         </div>
         <h1 style={{ fontSize:'clamp(2rem,5vw,3.5rem)', fontWeight:900, lineHeight:1.05, letterSpacing:-1.5, margin:'0 0 18px' }}>
           <span style={{ color:'#fff' }}>Yoleni</span>{' '}
@@ -411,7 +411,7 @@ function Layout() {
         </Routes>
         <footer style={{ borderTop:`1px solid rgba(233,30,140,.08)`, padding:'24px', textAlign:'center', marginTop:40 }}>
           <p style={{ color:'rgba(255,255,255,.2)', fontSize:13, margin:0 }}>
-            Yoleni Design de Processos Químicos • Desenvolvido com 💜 para Engenheira Yoleni • Powered by OpenAI GPT-4
+            Yoleni Design de Processos Químicos • Desenvolvido com 💜 para Engenheira Yoleni • Powered by Aristides Chiovo
           </p>
         </footer>
       </div>
