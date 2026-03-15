@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
 /* ─── API helpers ─────────────────────────────────────────── */
-const BASE = process.env.REACT_APP_API_URL || '/api';
+const BASE = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 const apiFetch = async (path) => {
   const r = await fetch(BASE + path);

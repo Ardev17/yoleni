@@ -112,4 +112,8 @@
    }
  };
  
+<<<<<<< HEAD
  module.exports = { pool, testConnection };
+=======
+ module.exports = { pool, testConnection };
+>>>>>>> 96334326316f945cc296fbd7b29cdd6461cd48ca

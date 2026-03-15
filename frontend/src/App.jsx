@@ -18,8 +18,12 @@ const C = {
 };
 
 /* ─── API helpers ─────────────────────────────────────────── */
+
+// URL base da API — usa variável de ambiente ou fallback para localhost
+const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+
 const callAPI = async (substances_input) => {
-  const res = await fetch('/api/analyze', {
+  const res = await fetch(`${API_BASE}/analyze`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ substances_input, title: `Análise ${new Date().toLocaleDateString('pt-BR')}` }),
@@ -31,7 +35,7 @@ const callAPI = async (substances_input) => {
 const callFileAPI = async (file) => {
   const formData = new FormData();
   formData.append('file', file);
-  const res = await fetch('/api/analyze/file', { method: 'POST', body: formData });
+  const res = await fetch(`${API_BASE}/analyze/file`, { method: 'POST', body: formData });
   if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'Erro no arquivo'); }
   return res.json();
 };
@@ -224,7 +228,7 @@ function Home() {
       {/* Hero */}
       <div style={{ textAlign:'center', marginBottom:60 }}>
         <div style={{ display:'inline-flex', alignItems:'center', gap:8, background:'rgba(233,30,140,.1)', border:`1px solid rgba(233,30,140,.3)`, borderRadius:30, padding:'8px 20px', marginBottom:28, fontSize:13, color:C.roseLight, fontWeight:600 }}>
-          ✨ Sistema Inteligente de IA &nbsp;•&nbsp; Powered by Aristides Chiovo
+          ✨ Sistema Inteligente de IA &nbsp;•&nbsp; Powered by GPT-4
         </div>
         <h1 style={{ fontSize:'clamp(2rem,5vw,3.5rem)', fontWeight:900, lineHeight:1.05, letterSpacing:-1.5, margin:'0 0 18px' }}>
           <span style={{ color:'#fff' }}>Yoleni</span>{' '}
@@ -407,7 +411,7 @@ function Layout() {
         </Routes>
         <footer style={{ borderTop:`1px solid rgba(233,30,140,.08)`, padding:'24px', textAlign:'center', marginTop:40 }}>
           <p style={{ color:'rgba(255,255,255,.2)', fontSize:13, margin:0 }}>
-            Yoleni Design de Processos Químicos • Desenvolvido com 💜 para Engenheira Yoleni • Powered Aristides Chiovo
+            Yoleni Design de Processos Químicos • Desenvolvido com 💜 para Engenheira Yoleni • Powered by OpenAI GPT-4
           </p>
         </footer>
       </div>
