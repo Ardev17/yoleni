@@ -23,7 +23,7 @@ const C = {
 const API_BASE = process.env.REACT_APP_API_URL || 'https://amiable-dedication-production.up.railway.app/api';
 
 const callAPI = async (substances_input) => {
-  const res = await fetch(`${API_BASE}/api/analyze`, {
+  const res = await fetch(`${API_BASE}/api/analy`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ substances_input, title: `Análise ${new Date().toLocaleDateString('pt-BR')}` }),
