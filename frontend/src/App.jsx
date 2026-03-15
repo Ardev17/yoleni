@@ -20,7 +20,7 @@ const C = {
 /* ─── API helpers ─────────────────────────────────────────── */
 
 // URL base da API — usa variável de ambiente ou fallback para localhost
-const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_BASE = 'https://amiable-dedication-production.up.railway.app/api';
 
 const callAPI = async (substances_input) => {
   const res = await fetch(`${API_BASE}/analyze`, {
