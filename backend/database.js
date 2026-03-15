@@ -1,7 +1,7 @@
 /**
  * ============================================================
  * Yoleni Chemical AI - Database Connection
- * Suporta MYSQL_URL (Railway) ou variáveis individuais
+ * Compatível com Railway (MYSQL_URL) e local
  * ============================================================
  */
 
@@ -10,25 +10,31 @@
  
  let poolConfig;
  
- // Railway usa MYSQL_URL — suporta os dois formatos
- if (process.env.MYSQL_URL || process.env.DATABASE_URL) {
-   const url = process.env.MYSQL_URL || process.env.DATABASE_URL;
+ // Railway fornece MYSQL_URL no formato:
+ // mysql://user:password@host:port/database
+ if (process.env.MYSQL_URL) {
    console.log('🔗 Usando MYSQL_URL para conectar...');
+   const url = new URL(process.env.MYSQL_URL);
    poolConfig = {
-     uri: url,
+     host:     url.hostname,
+     port:     parseInt(url.port) || 3306,
+     user:     url.username,
+     password: url.password,
+     database: url.pathname.replace('/', ''),
      waitForConnections: true,
      connectionLimit: 10,
      queueLimit: 0,
      ssl: { rejectUnauthorized: false },
    };
  } else {
-   // Variáveis individuais (local ou Railway com vars separadas)
+   // Variáveis individuais (local)
+   console.log('🔗 Usando variáveis individuais para conectar...');
    poolConfig = {
      host:     process.env.DB_HOST     || 'localhost',
      port:     parseInt(process.env.DB_PORT) || 3306,
      user:     process.env.DB_USER     || 'root',
      password: process.env.DB_PASSWORD || '',
-     database: process.env.DB_NAME     || 'railway',
+     database: process.env.DB_NAME     || 'yoleni_chemical',
      waitForConnections: true,
      connectionLimit: 10,
      queueLimit: 0,
@@ -39,15 +45,13 @@
  const pool = mysql.createPool(poolConfig);
  
  /**
-  * Testa a conexão e cria as tabelas se não existirem
+  * Testa a conexão e cria as tabelas automaticamente
   */
  const testConnection = async () => {
    try {
      const connection = await pool.getConnection();
      console.log('✅ MySQL conectado com sucesso!');
      connection.release();
- 
-     // Cria tabelas automaticamente se não existirem
      await createTables();
    } catch (error) {
      console.error('❌ Erro ao conectar MySQL:', error.message);
@@ -56,7 +60,7 @@
  };
  
  /**
-  * Cria as tabelas automaticamente (não precisa executar schema.sql manualmente)
+  * Cria as tabelas automaticamente se não existirem
   */
  const createTables = async () => {
    try {
@@ -69,7 +73,7 @@
          substances_count INT DEFAULT 0,
          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-       ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
+       )
      `);
  
      await pool.execute(`
@@ -87,7 +91,7 @@
          maintenance_time VARCHAR(100),
          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
          FOREIGN KEY (analysis_id) REFERENCES analyses(id) ON DELETE CASCADE
-       ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
+       )
      `);
  
      await pool.execute(`
@@ -103,7 +107,7 @@
          process_type ENUM('optimized','low_cost','eco_friendly') DEFAULT 'optimized',
          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
          FOREIGN KEY (analysis_id) REFERENCES analyses(id) ON DELETE CASCADE
-       ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
+       )
      `);
  
      console.log('✅ Tabelas verificadas/criadas com sucesso!');
@@ -112,8 +116,4 @@
    }
  };
  
-<<<<<<< HEAD
  module.exports = { pool, testConnection };
-=======
- module.exports = { pool, testConnection };
->>>>>>> 96334326316f945cc296fbd7b29cdd6461cd48ca
