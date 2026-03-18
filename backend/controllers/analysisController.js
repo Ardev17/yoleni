@@ -29,7 +29,7 @@
          { role: 'user', content: prompt },
        ],
        temperature: 0.3,
-       max_tokens: 8000,
+       max_tokens: 32768,
      }),
    });
  
@@ -173,8 +173,8 @@
  
      if (materials.length === 0)
        return res.status(400).json({ error: 'Nenhuma matéria-prima válida encontrada.' });
-     if (materials.length > 10)
-       return res.status(400).json({ error: 'Máximo de 10 matérias-primas por análise.' });
+     if (materials.length > 5)
+       return res.status(400).json({ error: 'Máximo de 5 matérias-primas por análise para garantir análise completa.' });
      if (!process.env.GROQ_API_KEY)
        return res.status(500).json({ error: 'GROQ_API_KEY não configurada no .env' });
  
