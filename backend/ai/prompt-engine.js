@@ -156,10 +156,34 @@ Retorne EXCLUSIVAMENTE JSON válido sem markdown:
 
       "combinations_with_other_materials": [
         {
-          "combine_with": "Nome da outra matéria-prima",
-          "resulting_product": "Produto obtido da combinação",
-          "combination_benefit": "Por que esta combinação é vantajosa",
-          "process_overview": "Resumo do processo de combinação"
+          "combine_with": "Nome da 1ª matéria-prima para combinar",
+          "resulting_product": "Produto obtido desta combinação",
+          "combination_benefit": "Por que esta combinação é vantajosa industrialmente",
+          "process_overview": "Resumo do processo de combinação com etapas principais"
+        },
+        {
+          "combine_with": "Nome da 2ª matéria-prima",
+          "resulting_product": "Produto obtido",
+          "combination_benefit": "Vantagem desta combinação",
+          "process_overview": "Resumo do processo"
+        },
+        {
+          "combine_with": "Nome da 3ª matéria-prima",
+          "resulting_product": "Produto obtido",
+          "combination_benefit": "Vantagem",
+          "process_overview": "Resumo do processo"
+        },
+        {
+          "combine_with": "Nome da 4ª matéria-prima",
+          "resulting_product": "Produto obtido",
+          "combination_benefit": "Vantagem",
+          "process_overview": "Resumo do processo"
+        },
+        {
+          "combine_with": "Nome da 5ª matéria-prima",
+          "resulting_product": "Produto obtido",
+          "combination_benefit": "Vantagem",
+          "process_overview": "Resumo do processo"
         }
       ]
     }
@@ -184,7 +208,8 @@ REGRAS OBRIGATÓRIAS — NUNCA IGNORE:
 5. Todos os custos em AOA (Kwanzas Angolanos)
 6. Dados científicos reais, não genéricos
 7. Contexto angolano/africano em disponibilidade e custos
-8. O JSON deve ser completo — não truncar nunca`;
+8. MÍNIMO de 5 combinações com outras matérias-primas por material
+9. O JSON deve ser completo — não truncar nunca`;
 };
 
 const buildFileAnalysisPrompt = (materials, filename) => {
