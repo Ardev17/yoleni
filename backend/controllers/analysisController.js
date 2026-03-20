@@ -260,16 +260,31 @@
      const limit  = Math.min(50, parseInt(req.query.limit)||12);
      const search = req.query.search ? `%${req.query.search}%` : null;
      const offset = (page-1)*limit;
+ 
+     // Força inteiros para evitar erros de tipo no mysql2
+     const limitInt  = parseInt(limit);
+     const offsetInt = parseInt(offset);
+ 
      const [countRows] = search
        ? await pool.execute('SELECT COUNT(*) as total FROM analyses WHERE title LIKE ? OR input_substances LIKE ?', [search,search])
        : await pool.execute('SELECT COUNT(*) as total FROM analyses');
-     const total = countRows[0].total;
+     const total = parseInt(countRows[0].total) || 0;
+ 
      const [rows] = search
-       ? await pool.execute('SELECT id,title,input_substances,substances_count,created_at FROM analyses WHERE title LIKE ? OR input_substances LIKE ? ORDER BY created_at DESC LIMIT ? OFFSET ?', [search,search,limit,offset])
-       : await pool.execute('SELECT id,title,input_substances,substances_count,created_at FROM analyses ORDER BY created_at DESC LIMIT ? OFFSET ?', [limit,offset]);
-     return res.json({ success:true, data:rows, pagination:{ total, page, limit, totalPages:Math.ceil(total/limit) } });
+       ? await pool.execute(
+           'SELECT id,title,input_substances,substances_count,created_at FROM analyses WHERE title LIKE ? OR input_substances LIKE ? ORDER BY created_at DESC LIMIT ? OFFSET ?',
+           [search, search, limitInt, offsetInt]
+         )
+       : await pool.execute(
+           'SELECT id,title,input_substances,substances_count,created_at FROM analyses ORDER BY created_at DESC LIMIT ? OFFSET ?',
+           [limitInt, offsetInt]
+         );
+ 
+     console.log(`✅ getHistory: ${rows.length} rows, total=${total}`);
+     return res.json({ success:true, data:rows, pagination:{ total, page, limit:limitInt, totalPages: Math.ceil(total/limitInt)||1 } });
    } catch(e) {
-     return res.json({ success:true, data:[], pagination:{ total:0, page:1, limit:12, totalPages:0 } });
+     console.error('Erro getHistory:', e.message);
+     return res.json({ success:true, data:[], pagination:{ total:0, page:1, limit:12, totalPages:0 }, error: e.message });
    }
  };
  
@@ -332,6 +347,7 @@
      `);
      return res.json({ success:true, data:{ totals, recentActivity:recent, topSubstances, impactDistribution:impactDist } });
    } catch(e) {
+     console.error('Erro getStats:', e.message);
      return res.json({ success:true, data:{ totals:{ total_analyses:0, total_substances:0, max_substances:0, min_substances:0 }, recentActivity:[], topSubstances:[], impactDistribution:[] } });
    }
  };

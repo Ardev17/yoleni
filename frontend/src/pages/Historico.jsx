@@ -216,7 +216,10 @@ export default function Historico() {
   useEffect(() => { const t = setTimeout(() => setDebouncedSearch(search), 400); return () => clearTimeout(t); }, [search]);
 
   useEffect(() => {
-    apiFetch('/history/stats').then(r => setStats(r.data)).catch(()=>{}).finally(() => setLoadingStats(false));
+    apiFetch('/history/stats')
+      .then(r => { console.log('Stats response:', r); setStats(r.data); })
+      .catch(e => { console.error('Erro stats:', e); })
+      .finally(() => setLoadingStats(false));
   }, []);
 
   const loadHistory = useCallback(async (page = 1) => {
@@ -224,9 +227,15 @@ export default function Historico() {
     try {
       const qs = new URLSearchParams({ page, limit:12, ...(debouncedSearch ? { search:debouncedSearch } : {}) });
       const r = await apiFetch(`/history?${qs}`);
-      setHistory(r.data || []);
-      setPagInfo(r.pagination || { total:0, page:1, totalPages:1 });
-    } catch { setHistory([]); }
+      console.log('History response:', r);
+      const data = r.data || [];
+      const pagination = r.pagination || { total: data.length, page:1, limit:12, totalPages: Math.ceil(data.length/12)||1 };
+      setHistory(data);
+      setPagInfo(pagination);
+    } catch(e) {
+      console.error('Erro ao carregar histórico:', e);
+      setHistory([]);
+    }
     finally { setLoading(false); }
   }, [debouncedSearch]);
 
@@ -344,7 +353,7 @@ export default function Historico() {
               <div style={{ width:38, height:38, borderRadius:12, background:`linear-gradient(135deg,${C.emerald},${C.teal})`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:17 }}>📋</div>
               <div>
                 <div style={{ fontSize:17, fontWeight:800 }}>Todas as Pesquisas</div>
-                <div style={{ fontSize:12, color:C.dim, marginTop:2 }}>{pagInfo.total} análise(s)</div>
+                <div style={{ fontSize:12, color:C.dim, marginTop:2 }}>{pagInfo.total || history.length} análise(s) registrada(s)</div>
               </div>
             </div>
             <div style={{ display:'flex', gap:8, alignItems:'center', flex:'1 1 auto', justifyContent:'flex-end', flexWrap:'wrap' }}>
